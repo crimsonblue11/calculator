@@ -50,4 +50,16 @@ public class Window {
         guiFrame.setVisible(true);
     }
 
+    private String shunt(String input) {
+        OutputQueue queue = new OutputQueue();
+        OperatorStack stack = new OperatorStack();
+
+        for(int i = 0; i < input.length(); i++) {
+            if(input.charAt(i) == '0') {
+                queue.push(input.charAt(i));
+            }
+        }
+
+        return "";
+    }
 }
