@@ -3,6 +3,8 @@ package com.calc;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Window {
     private final JFrame guiFrame = new JFrame();
@@ -50,16 +52,48 @@ public class Window {
         guiFrame.setVisible(true);
     }
 
-    private String shunt(String input) {
-        OutputQueue queue = new OutputQueue();
-        OperatorStack stack = new OperatorStack();
+    // made public to test, todo: make private
+    public String shunt(String input) {
+        OutputQueue<Character> queue = new OutputQueue<>();
+        OutputQueue<Character> numQueue = new OutputQueue<>();
+        OperatorStack<Character> stack = new OperatorStack<>();
 
+
+        //input.replaceAll("\\s",""); //remove whitespace
+
+        // only works for single digit ints, todo: refactor to allow for multi-digit ints / floats
+        // todo: implement brackets
         for(int i = 0; i < input.length(); i++) {
-            if(input.charAt(i) == '0') {
-                queue.push(input.charAt(i));
+            Matcher num = Pattern.compile("\\d").matcher("" + input.charAt(i));
+            Matcher whitespace = Pattern.compile("\\s").matcher("" + input.charAt(i));
+
+            if(num.matches() || input.charAt(i) == '.') {
+                // character is numeric or a point
+//                queue.push(input.charAt(i));
+//
+//                if (operator) {
+//                    queue.push(stack.pop());
+//                    operator = false;
+//                }
+                numQueue.push(input.charAt(i));
+            } else if(whitespace.matches()) {
+                while(!numQueue.isEmpty()) {
+                    queue.push(numQueue.pop());
+                }
+            } else {
+                //assuming valid input, todo: add case for invalid input
+                stack.push(input.charAt(i));
             }
         }
 
-        return "";
+        while(!numQueue.isEmpty()) {
+            queue.push(numQueue.pop());
+        }
+
+        while(!stack.isEmpty()) {
+            queue.push(stack.pop());
+        }
+
+        return queue.toString();
     }
 }
