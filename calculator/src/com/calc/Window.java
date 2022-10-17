@@ -10,7 +10,6 @@ public class Window {
     private final JFrame guiFrame = new JFrame();
     private final ArrayList<JButton> buttArr = new ArrayList<>();
 
-
     public Window() {
         guiFrame.setTitle("Calculator");
     }
@@ -54,46 +53,47 @@ public class Window {
 
     // made public to test, todo: make private
     public String shunt(String input) {
-        OutputQueue<Character> queue = new OutputQueue<>();
-        OutputQueue<Character> numQueue = new OutputQueue<>();
-        OperatorStack<Character> stack = new OperatorStack<>();
+        OutputQueue<String> outQueue = new OutputQueue<>();
+        OperatorStack opStack = new OperatorStack();
 
-
-        //input.replaceAll("\\s",""); //remove whitespace
-
-        // only works for single digit ints, todo: refactor to allow for multi-digit ints / floats
         // todo: implement brackets
-        for(int i = 0; i < input.length(); i++) {
-            Matcher num = Pattern.compile("\\d").matcher("" + input.charAt(i));
-            Matcher whitespace = Pattern.compile("\\s").matcher("" + input.charAt(i));
 
-            if(num.matches() || input.charAt(i) == '.') {
-                // character is numeric or a point
-//                queue.push(input.charAt(i));
-//
-//                if (operator) {
-//                    queue.push(stack.pop());
-//                    operator = false;
-//                }
-                numQueue.push(input.charAt(i));
-            } else if(whitespace.matches()) {
-                while(!numQueue.isEmpty()) {
-                    queue.push(numQueue.pop());
+        for(int i = 0; i < input.length(); i++) {
+            char curr = input.charAt(i);
+
+            Matcher num = Pattern.compile("\\d").matcher("" + curr);
+            Matcher op = Pattern.compile("\\+|-|/|\\*|^").matcher("" + curr);
+
+            if(num.matches()) {
+                outQueue.push("" + curr);
+            } else if(op.matches()) {
+                outQueue.push(" ");
+                // have to print number spaces here so multidigit numbers don't get break
+                while(!opStack.isEmpty() && testPrecedence(curr, opStack.peek())) {
+                    outQueue.push(opStack.pop() + " ");
                 }
-            } else {
-                //assuming valid input, todo: add case for invalid input
-                stack.push(input.charAt(i));
+                opStack.push(curr);
             }
         }
 
-        while(!numQueue.isEmpty()) {
-            queue.push(numQueue.pop());
+        while(!opStack.isEmpty()) {
+            outQueue.push(" " + opStack.pop());
         }
 
-        while(!stack.isEmpty()) {
-            queue.push(stack.pop());
-        }
+        return outQueue.dump();
+    }
 
-        return queue.toString();
+    private int operatorPrecedence(char op) {
+        return switch (op) {
+            case '+', '-' -> 1;
+            case '*', '/' -> 2;
+            case '^' -> 3;
+            default -> 0;
+        };
+    }
+
+    // return true if o1 has lesser precedence than o2
+    private boolean testPrecedence(char o1, char o2) {
+        return (operatorPrecedence(o1) < operatorPrecedence(o2));
     }
 }

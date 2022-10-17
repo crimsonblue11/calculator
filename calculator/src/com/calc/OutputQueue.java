@@ -11,12 +11,13 @@ public class OutputQueue<T> {
 
     public boolean isEmpty() { return queue.isEmpty(); }
 
-    @Override
-    public String toString() {
+    public String dump() {
         String out = "";
         for(int i = 0; i < queue.size(); i++) {
-            out += queue.get(i) + " ";
+            out += queue.get(i);
         }
+
+        queue.clear();
 
         return out;
     }
