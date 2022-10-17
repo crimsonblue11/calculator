@@ -11,5 +11,5 @@ public class OperatorStack {
 
     public boolean isEmpty() { return opStack.isEmpty(); }
 
-    public char peek() { return opStack.get(opStack.size() - 1); }
+    public char peek() { return opStack.get(0); }
 }

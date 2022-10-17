@@ -62,14 +62,15 @@ public class Window {
             char curr = input.charAt(i);
 
             Matcher num = Pattern.compile("\\d").matcher("" + curr);
-            Matcher op = Pattern.compile("\\+|-|/|\\*|^").matcher("" + curr);
+            Matcher op = Pattern.compile("[+\\-/*^]").matcher("" + curr);
 
             if(num.matches()) {
                 outQueue.push("" + curr);
             } else if(op.matches()) {
                 outQueue.push(" ");
                 // have to print number spaces here so multidigit numbers don't get break
-                while(!opStack.isEmpty() && testPrecedence(curr, opStack.peek())) {
+                while(!opStack.isEmpty() && (operatorPrecedence(curr) < operatorPrecedence(opStack.peek())
+                        || (operatorPrecedence(curr) == operatorPrecedence(opStack.peek()) && isLeftAssoc(curr)))) {
                     outQueue.push(opStack.pop() + " ");
                 }
                 opStack.push(curr);
@@ -92,8 +93,14 @@ public class Window {
         };
     }
 
+    private boolean isLeftAssoc(char op) {
+        return (op == '+' || op == '-' || op == '*' || op == '/');
+    }
+
     // return true if o1 has lesser precedence than o2
     private boolean testPrecedence(char o1, char o2) {
         return (operatorPrecedence(o1) < operatorPrecedence(o2));
     }
+
+
 }
