@@ -3,12 +3,12 @@ package com.calc;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Window {
     private final JFrame guiFrame = new JFrame();
-    private final ArrayList<JButton> buttArr = new ArrayList<>();
+    private final ArrayList<JButton> numArr = new ArrayList<>();
+    private final ArrayList<JButton> mathArr = new ArrayList<>();
+    private final ArrayList<JButton> calcArr = new ArrayList<>();
 
     public Window() {
         guiFrame.setTitle("Calculator");
@@ -19,95 +19,55 @@ public class Window {
         guiFrame.setLayout(new BorderLayout());
         guiFrame.setPreferredSize(new Dimension(400,700));
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
-        for(int i = 0; i < 20; i++) {
-            String buttText = switch (i) {
-                case 0 -> "B";
-                case 1 -> "(";
-                case 2 -> ")";
-                case 3 -> "C";
-                case 7 -> "/";
-                case 11 -> "*";
-                case 15 -> "-";
-                case 16 -> "0";
-                case 17 -> ".";
-                case 18 -> "=";
-                case 19 -> "+";
-                default -> "" + i;
-            };
+        JPanel numPanel = new JPanel();
+        numPanel.setLayout(new FlowLayout());
 
-            buttArr.add(new JButton(buttText));
-            if(i == 9) {
-                buttArr.get(i).setText("0");
-            }
-            buttArr.get(i).setPreferredSize(new Dimension(100,100));
-            panel.add(buttArr.get(i));
+        JPanel mathPanel = new JPanel();
+        mathPanel.setLayout(new GridLayout(0, 1));
+
+        JPanel calcPanel = new JPanel();
+        calcPanel.setLayout(new BoxLayout(calcPanel, BoxLayout.LINE_AXIS));
+
+        for(int i = 0; i < 10; i++) {
+            numArr.add(new JButton("" + i));
+            numArr.get(i).setPreferredSize(new Dimension(100,100));
+            numPanel.add(numArr.get(i));
         }
 
-        guiFrame.add(panel, BorderLayout.CENTER);
+        for(int i = 0; i < 5; i++) {
+            String text = switch(i) {
+                case 0 -> "+";
+                case 1 -> "-";
+                case 2 -> "*";
+                case 3 -> "/";
+                case 4 -> "^";
+                default -> "";
+            };
+            mathArr.add(new JButton(text));
+            mathArr.get(i).setPreferredSize(new Dimension(100, 100));
+            mathPanel.add(mathArr.get(i));
+        }
+
+        for(int i = 0; i < 4; i++) {
+            String text = switch(i) {
+                case 0 -> "C";
+                case 1 -> "B";
+                case 3 -> "=";
+                default -> "";
+            };
+            calcArr.add(new JButton(text));
+            calcArr.get(i).setPreferredSize(new Dimension(100, 100));
+            calcArr.add(calcArr.get(i));
+        }
+
+        guiFrame.add(numPanel, BorderLayout.CENTER);
+        guiFrame.add(mathPanel, BorderLayout.EAST);
+        guiFrame.add(calcPanel, BorderLayout.NORTH);
 
         guiFrame.pack();
         guiFrame.setVisible(true);
     }
 
-    // made public to test, todo: make private
-    public String shunt(String input) {
-        OutputQueue<String> outQueue = new OutputQueue<>();
-        OperatorStack opStack = new OperatorStack();
-
-        // todo: implement brackets
-
-        for(int i = 0; i < input.length(); i++) {
-            char curr = input.charAt(i);
-
-            Matcher num = Pattern.compile("\\d").matcher("" + curr);
-            Matcher op = Pattern.compile("[+\\-/*^]").matcher("" + curr);
-
-            if(num.matches()) {
-                outQueue.push("" + curr);
-            } else if(op.matches()) {
-                outQueue.push(" ");
-                // have to print number spaces here so multidigit numbers don't get break
-                while(!opStack.isEmpty() && (operatorPrecedence(curr) < operatorPrecedence(opStack.peek())
-                        || (operatorPrecedence(curr) == operatorPrecedence(opStack.peek()) && isLeftAssoc(curr)))) {
-                    outQueue.push(opStack.pop() + " ");
-                }
-                opStack.push(curr);
-            } else if (curr == '(') {
-                opStack.push(curr);
-            } else if(curr == ')') {
-                while(opStack.peek() != '(') {
-                    outQueue.push(" " + opStack.pop());
-                }
-                opStack.pop(); //discard left parenthesis
-            }
-        }
-
-        while(!opStack.isEmpty()) {
-            outQueue.push(" " + opStack.pop());
-        }
-
-        return outQueue.dump();
-    }
-
-    private int operatorPrecedence(char op) {
-        return switch (op) {
-            case '+', '-' -> 1;
-            case '*', '/' -> 2;
-            case '^' -> 3;
-            default -> 0;
-        };
-    }
-
-    private boolean isLeftAssoc(char op) {
-        return (op == '+' || op == '-' || op == '*' || op == '/');
-    }
-
-    // return true if o1 has lesser precedence than o2
-    private boolean testPrecedence(char o1, char o2) {
-        return (operatorPrecedence(o1) < operatorPrecedence(o2));
-    }
 
 
 }
