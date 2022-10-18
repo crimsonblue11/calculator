@@ -12,6 +12,7 @@ public class Main {
         System.out.println(w.shunt("30+52"));
         System.out.println(w.shunt("2^4"));
         System.out.println(w.shunt("1+2*3/4^5"));
+        System.out.println(w.shunt("2*(4+3)"));
 
     }
 }

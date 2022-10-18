@@ -74,6 +74,13 @@ public class Window {
                     outQueue.push(opStack.pop() + " ");
                 }
                 opStack.push(curr);
+            } else if (curr == '(') {
+                opStack.push(curr);
+            } else if(curr == ')') {
+                while(opStack.peek() != '(') {
+                    outQueue.push(" " + opStack.pop());
+                }
+                opStack.pop(); //discard left parenthesis
             }
         }
 
