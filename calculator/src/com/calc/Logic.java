@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class Logic {
     // made public to test, todo: make private
-    public String shunt(String input) {
+    public static String shunt(String input) {
         OutputQueue<String> outQueue = new OutputQueue<>();
         OperatorStack opStack = new OperatorStack();
 
@@ -17,11 +17,11 @@ public class Logic {
             Matcher num = Pattern.compile("\\d").matcher("" + curr);
             Matcher op = Pattern.compile("[+\\-/*^]").matcher("" + curr);
 
-            if(num.matches()) {
+            if(num.matches() || curr == '.') {
                 outQueue.push("" + curr);
             } else if(op.matches()) {
                 outQueue.push(" ");
-                // have to print number spaces here so multidigit numbers don't get break
+                // have to print number spaces here so multi digit numbers don't get break
                 while(!opStack.isEmpty() && (operatorPrecedence(curr) < operatorPrecedence(opStack.peek())
                         || (operatorPrecedence(curr) == operatorPrecedence(opStack.peek()) && isLeftAssoc(curr)))) {
                     outQueue.push(opStack.pop() + " ");
@@ -44,7 +44,7 @@ public class Logic {
         return outQueue.dump();
     }
 
-    private int operatorPrecedence(char op) {
+    private static int operatorPrecedence(char op) {
         return switch (op) {
             case '+', '-' -> 1;
             case '*', '/' -> 2;
@@ -53,8 +53,12 @@ public class Logic {
         };
     }
 
-    private boolean isLeftAssoc(char op) {
+    private static boolean isLeftAssoc(char op) {
         return (op == '+' || op == '-' || op == '*' || op == '/');
     }
 
+    private static float evaluate(String in) {
+
+        return 0f;
+    }
 }

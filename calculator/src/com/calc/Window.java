@@ -2,6 +2,8 @@ package com.calc;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Window {
@@ -17,57 +19,72 @@ public class Window {
     public void createGUI() {
         guiFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         guiFrame.setLayout(new BorderLayout());
-        guiFrame.setPreferredSize(new Dimension(400,700));
+        guiFrame.setPreferredSize(new Dimension(400, 700));
+//
+//        JPanel numPanel = new JPanel();
+//        numPanel.setLayout(new FlowLayout());
+//
+//        JPanel mathPanel = new JPanel();
+//        mathPanel.setLayout(new GridLayout(0, 1));
+//
+//        JPanel calcPanel = new JPanel();
+//        calcPanel.setLayout(new BoxLayout(calcPanel, BoxLayout.LINE_AXIS));
+//
+//        for(int i = 0; i < 10; i++) {
+//            numArr.add(new JButton("" + i));
+//            numArr.get(i).setPreferredSize(new Dimension(100,100));
+//            numPanel.add(numArr.get(i));
+//        }
+//
+//        for(int i = 0; i < 5; i++) {
+//            String text = switch(i) {
+//                case 0 -> "+";
+//                case 1 -> "-";
+//                case 2 -> "*";
+//                case 3 -> "/";
+//                case 4 -> "^";
+//                default -> "";
+//            };
+//            mathArr.add(new JButton(text));
+//            mathArr.get(i).setPreferredSize(new Dimension(100, 100));
+//            mathPanel.add(mathArr.get(i));
+//        }
+//
+//        for(int i = 0; i < 4; i++) {
+//            String text = switch(i) {
+//                case 0 -> "C";
+//                case 1 -> "B";
+//                case 3 -> "=";
+//                default -> "";
+//            };
+//            calcArr.add(new JButton(text));
+//            calcArr.get(i).setPreferredSize(new Dimension(100, 100));
+//            calcArr.add(calcArr.get(i));
+//        }
+//
+//        guiFrame.add(numPanel, BorderLayout.CENTER);
+//        guiFrame.add(mathPanel, BorderLayout.EAST);
+//        guiFrame.add(calcPanel, BorderLayout.NORTH);
 
-        JPanel numPanel = new JPanel();
-        numPanel.setLayout(new FlowLayout());
+        JPanel panel = new JPanel();
+        JTextField input = new JTextField();
+        input.setPreferredSize(new Dimension(300, 50));
+        JButton submit = new JButton("=");
+        JLabel label = new JLabel();
 
-        JPanel mathPanel = new JPanel();
-        mathPanel.setLayout(new GridLayout(0, 1));
+        submit.addActionListener(e -> {
+            String in = input.getText();
+            String out = Logic.shunt(in);
+            label.setText(out);
+        });
 
-        JPanel calcPanel = new JPanel();
-        calcPanel.setLayout(new BoxLayout(calcPanel, BoxLayout.LINE_AXIS));
-
-        for(int i = 0; i < 10; i++) {
-            numArr.add(new JButton("" + i));
-            numArr.get(i).setPreferredSize(new Dimension(100,100));
-            numPanel.add(numArr.get(i));
-        }
-
-        for(int i = 0; i < 5; i++) {
-            String text = switch(i) {
-                case 0 -> "+";
-                case 1 -> "-";
-                case 2 -> "*";
-                case 3 -> "/";
-                case 4 -> "^";
-                default -> "";
-            };
-            mathArr.add(new JButton(text));
-            mathArr.get(i).setPreferredSize(new Dimension(100, 100));
-            mathPanel.add(mathArr.get(i));
-        }
-
-        for(int i = 0; i < 4; i++) {
-            String text = switch(i) {
-                case 0 -> "C";
-                case 1 -> "B";
-                case 3 -> "=";
-                default -> "";
-            };
-            calcArr.add(new JButton(text));
-            calcArr.get(i).setPreferredSize(new Dimension(100, 100));
-            calcArr.add(calcArr.get(i));
-        }
-
-        guiFrame.add(numPanel, BorderLayout.CENTER);
-        guiFrame.add(mathPanel, BorderLayout.EAST);
-        guiFrame.add(calcPanel, BorderLayout.NORTH);
+        panel.add(input);
+        panel.add(submit);
+        panel.add(label);
+        guiFrame.add(panel);
 
         guiFrame.pack();
         guiFrame.setVisible(true);
     }
-
-
 
 }
