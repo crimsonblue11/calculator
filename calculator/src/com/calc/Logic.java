@@ -4,9 +4,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Logic {
+
     // made public to test, todo: make private
-    public static String shunt(String input) {
-        OutputQueue<String> outQueue = new OutputQueue<>();
+    public static float evaluate(String input) {
+        OutputQueue<String> outQueue = new OutputQueue<String>();
         OperatorStack opStack = new OperatorStack();
 
         // todo: implement brackets
@@ -41,7 +42,9 @@ public class Logic {
             outQueue.push(" " + opStack.pop());
         }
 
-        return outQueue.dump();
+//        System.out.println(outQueue.dump());
+
+        return convertString(outQueue);
     }
 
     private static int operatorPrecedence(char op) {
@@ -57,8 +60,26 @@ public class Logic {
         return (op == '+' || op == '-' || op == '*' || op == '/');
     }
 
-    private static float evaluate(String in) {
+    private static float convertString(OutputQueue<String> in) {
+        String[] array = in.dump().split(" ");
+        float op1 = Float.parseFloat(array[0]);
+        float op2 = Float.parseFloat(array[1]);
+        char operator = array[2].charAt(0);
 
-        return 0f;
+        return actualEval(op1, op2, operator);
+    }
+
+    private static float actualEval(float op1, float op2, char operand) {
+        float out;
+        switch(operand) {
+            case '+' -> out = op1 + op2;
+            case '-' -> out = op1 - op2;
+            case '/' -> out = op1 / op2;
+            case '*' -> out = op1 * op2;
+            case '^' -> out = (float) Math.pow(op1, op2);
+            default -> out = 0;
+        }
+
+        return out;
     }
 }

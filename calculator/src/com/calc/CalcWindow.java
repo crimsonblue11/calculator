@@ -2,17 +2,15 @@ package com.calc;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class Window {
+public class CalcWindow {
     private final JFrame guiFrame = new JFrame();
     private final ArrayList<JButton> numArr = new ArrayList<>();
     private final ArrayList<JButton> mathArr = new ArrayList<>();
     private final ArrayList<JButton> calcArr = new ArrayList<>();
 
-    public Window() {
+    public CalcWindow() {
         guiFrame.setTitle("Calculator");
     }
 
@@ -74,7 +72,7 @@ public class Window {
 
         submit.addActionListener(e -> {
             String in = input.getText();
-            String out = Logic.shunt(in);
+            String out = "" + Logic.evaluate(in);
             label.setText(out);
         });
 
